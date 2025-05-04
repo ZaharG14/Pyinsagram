@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Пости</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            max-width: 600px;
+            margin: auto;
+        }
+        .post {
+            border-bottom: 1px solid #ccc;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+        }
+        .post img {
+            max-width: 100%;
+            height: auto;
+        }
+        .author {
+            font-weight: bold;
+        }
+        .caption {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Стрічка постів</h1>
+
+    {% for post in posts %}
+        <div class="post">
+            <p class="author">{{ post.author.username }} — {{ post.created_at|date:"d M Y H:i" }}</p>
+
+            {% if post.image %}
+                <img src="{{ post.image.url }}" alt="Зображення">
+            {% else %}
+                {% for img in post.images.all %}
+                    <img src="{{ img.image.url }}" alt="Зображення">
+                {% endfor %}
+            {% endif %}
+
+            <p class="caption">{{ post.caption }}</p>
+            <p>❤️ {{ post.likes.count }} лайків</p>
+        </div>
+    {% empty %}
+        <p>Поки що немає постів 😢</p>
+    {% endfor %}
+</body>
+</html>

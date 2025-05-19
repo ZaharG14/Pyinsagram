@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Деталі посту</title>
+</head>
+<body>
+      <h2>{{ post.author.username }}</h2>
+      <p>{{ post.caption }}</p>
+      {% for img in post.images.all %}
+          <img src="{{ img.image.url }}" alt="Image" width="300">
+      {% endfor %}
+
+      <form action="{% url 'like_post' post.pk %}" method="post">
+          {% csrf_token %}
+          <button type="submit">
+              {% if is_liked %}❤️ Лайкнуто{% else %}❤ Лайкнуто{% endif %}
+          </button>
+      </form>
+<p>{{ post.likes.count }} лайків</p>
+<a href="{% url 'home' %}">⬅ Назад</a>
+</body>
+</html>

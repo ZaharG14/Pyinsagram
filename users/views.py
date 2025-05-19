@@ -1,19 +1,13 @@
-from lib2to3.fixes.fix_input import context
-
-from django.contrib.auth.password_validation import password_changed
 from django.http import HttpResponse
-from django.shortcuts import redirect, render
 from django.template import loader
 
 from .forms import RegisterForm, LoginForm, PostForm
-from .models import User
+from .models import User, Post, Like
 from django.contrib import  messages
 
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
-from .models import Post
 
 def users(request):
     myusers = User.objects.all().values()
@@ -48,9 +42,9 @@ def login_view(request):
     if request.method == "POST":
         form = LoginForm(request.POST)
         if form.is_valid():
-            phone = form.cleaned_data["phone"]
+            username = form.cleaned_data["username"]
             password = form.cleaned_data["password"]
-            user = authenticate(request, phone=phone, password=password)
+            user = authenticate(request, username=username, password=password)
 
             if user:
                 login(request, user)
@@ -78,3 +72,21 @@ def create_post(request):
 def show_posts(request):
     posts = Post.objects.filter(is_published=True).order_by('-created_at')
     return render(request, 'show_posts.html', {'posts': posts})
+
+def post_detail(request, post_pk):
+    post = get_object_or_404(Post, pk=post_pk)
+    is_liked = False
+    if request.user.is_authenticated:
+        is_liked = Like.objects.filter(post=post, user=request.user).exists()
+    return render(request, 'post_detail.html', {
+        'post':post,
+        'is_liked':is_liked,
+    })
+
+@login_required
+def like_post(request, post_pk):
+    post = get_object_or_404(Post, pk=post_pk)
+    like, created = Like.objects.get_or_create(post=post, user= request.user)
+    if not created:
+        like.delete()
+    return redirect('post_detail', post_pk=post.pk)

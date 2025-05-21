@@ -61,7 +61,6 @@ class User(AbstractBaseUser, PermissionsMixin):
 class Post(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts')
     caption = models.TextField(blank=True)
-    likes = models.ManyToManyField(User, related_name='post_like')
     created_at = models.DateTimeField(auto_now_add=True)
     update_at = models.DateTimeField(auto_now=True)
     is_published = models.BooleanField(default=True)
@@ -83,7 +82,7 @@ class Post(models.Model):
 
 class Like(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    post = models.ForeignKey('Post', on_delete=models.CASCADE)
+    post = models.ForeignKey('Post', on_delete=models.CASCADE,related_name="likes")
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

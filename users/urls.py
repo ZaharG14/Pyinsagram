@@ -10,6 +10,6 @@ urlpatterns = [
     path('create/', views.create_post, name='create_post'),
     path('accounts/login/', views.login_view, name='login'),
     path('',views.show_posts, name='home'),
-    path('posts/<int:post_pk>/', views.post_detail, name='post_detail'),
-    path('posts/<int:post_pk>/like/', views.like_post, name='like_post'),
+    path('post/<int:post_pk>/', views.post_detail, name='post_detail'),
+    path('post/<int:post_pk>/like/', views.like_post_ajax, name='like_post_ajax'),
 ]

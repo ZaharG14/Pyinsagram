@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.template import loader
 
 from .forms import RegisterForm, LoginForm, PostForm
@@ -84,9 +84,16 @@ def post_detail(request, post_pk):
     })
 
 @login_required
-def like_post(request, post_pk):
-    post = get_object_or_404(Post, pk=post_pk)
+def like_post_ajax(request, post_pk):
+    post = (get_object_or_404(Post, pk=post_pk))
     like, created = Like.objects.get_or_create(post=post, user= request.user)
     if not created:
         like.delete()
-    return redirect('post_detail', post_pk=post.pk)
+        is_liked = False
+    else:
+        is_liked = True
+        print(like)
+    return JsonResponse({
+        "is_liked": is_liked,
+        "likes_count": post.likes.count()
+    })

@@ -112,3 +112,11 @@ class Image(models.Model):
     def __str__(self):
         return str(self.image)
 
+class Comment(models.Model):
+    post = models.ForeignKey('Post', on_delete=models.CASCADE, related_name='comments')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    content = models.TextField(max_length=500)
+    created_at = models.DateField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username}: {self.content[:30]}"

@@ -1,7 +1,7 @@
 from django.contrib.auth.password_validation import password_changed
 from django.forms import PasswordInput
 
-from .models import User, Post
+from .models import User, Post, Comment
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm
 from django.core.exceptions import ValidationError
@@ -55,4 +55,12 @@ class PostForm(forms.ModelForm):
         fields = ["caption"]
         widgets = {
             'caption':forms.Textarea(attrs={'rows':3, 'placeholder':'Напишіть підпис...'}),
+        }
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['content']
+        widgets = {
+            'content': forms.Textarea(attrs={'rows': 2, 'placeholder': 'Залишити коментар...'}),
         }

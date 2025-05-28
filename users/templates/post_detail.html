@@ -70,6 +70,25 @@
     });
 </script>
 
+<h3>Коментарі ({{ comments.count }})</h3>
+{% for comment in comments %}
+    <div style="margin-bottom: 10px;">
+        <strong>{{ comment.user.username}}</strong>: {{ comment.content }}<br>
+        <small>{{ comment.created_at|date:"d M Y H:i" }}</small>
+    </div>
+{% empty %}
+    <p>Ще немає коментарів</p>
+{% endfor %}
+
+{% if user.is_authenticated %}
+    <form method="post">
+        {% csrf_token %}
+        {{ comment_form.as_p }}
+        <button type="submit" name="comment_submit">Додати</button>
+    </form>
+{% else %}
+    <p><a href="{% url 'login' %}?next={{ request.path }}">Увійди</a>, щоб коментувати</p>
+{% endif %}
 <a href="{% url 'home' %}">← Назад до стрічки</a>
 
 </body>

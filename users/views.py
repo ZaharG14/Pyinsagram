@@ -1,8 +1,10 @@
+from django.db.transaction import commit
 from django.http import HttpResponse, JsonResponse
 from django.template import loader
+from django.template.defaulttags import comment
 
-from .forms import RegisterForm, LoginForm, PostForm
-from .models import User, Post, Like
+from .forms import RegisterForm, LoginForm, PostForm, CommentForm
+from .models import User, Post, Like, Comment
 from django.contrib import  messages
 
 from django.shortcuts import render, redirect, get_object_or_404
@@ -78,9 +80,27 @@ def post_detail(request, post_pk):
     is_liked = False
     if request.user.is_authenticated:
         is_liked = Like.objects.filter(post=post, user=request.user).exists()
+
+
+    comments = post.comments.all().order_by('-created_at')
+    comment_form = CommentForm()
+
+
+    if request.method == "POST" and 'comment_submit' in request.POST:
+        if request.user.is_authenticated:
+            comment_form = CommentForm(request.POST)
+            if comment_form.is_valid():
+                comment = comment_form.save(commit=False)
+                comment.user = request.user
+                comment.post = post
+                comment.save()
+                return redirect('post_detail', post_pk=post.pk)
+
     return render(request, 'post_detail.html', {
         'post':post,
         'is_liked':is_liked,
+        'comments': comments,
+        'comment_form': comment_form
     })
 
 @login_required
@@ -97,3 +117,4 @@ def like_post_ajax(request, post_pk):
         "is_liked": is_liked,
         "likes_count": post.likes.count()
     })
+

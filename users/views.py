@@ -73,7 +73,7 @@ def create_post(request):
 
 def show_posts(request):
     posts = Post.objects.filter(is_published=True).order_by('-created_at')
-    return render(request, 'show_posts.html', {'posts': posts})
+    return render(request, 'home.html', {'posts': posts})
 
 def post_detail(request, post_pk):
     post = get_object_or_404(Post, pk=post_pk)

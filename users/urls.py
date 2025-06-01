@@ -1,6 +1,7 @@
 from tkinter.font import names
 
 from django.urls import path
+from django.contrib.auth import views as auth_views
 from . import views
 
 urlpatterns = [
@@ -12,4 +13,5 @@ urlpatterns = [
     path('',views.show_posts, name='home'),
     path('post/<int:post_pk>/', views.post_detail, name='post_detail'),
     path('post/<int:post_pk>/like/', views.like_post_ajax, name='like_post_ajax'),
+    path('logout/', auth_views.LogoutView.as_view(next_page="login"), name='logout')
 ]

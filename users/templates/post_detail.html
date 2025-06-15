@@ -69,7 +69,14 @@
         });
     });
 </script>
-
+<p>
+    теги:
+    {% for pt in post.post_tags.all %}
+      <span class="badge bg-secondary">#{{ pt.tag.name }}</span>
+    {% empty %}
+      <em>Немає тегів</em>
+    {% endfor %}
+</p>
 <h3>Коментарі ({{ comments.count }})</h3>
 {% for comment in comments %}
     <div style="margin-bottom: 10px;">

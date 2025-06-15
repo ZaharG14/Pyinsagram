@@ -50,6 +50,8 @@ class LoginForm(forms.Form):
         return cleaned_data
 
 class PostForm(forms.ModelForm):
+    tags = forms.CharField(required=False, help_text="Через кому: fun, photo, day")
+
     class Meta:
         model = Post
         fields = ["caption"]
@@ -57,10 +59,27 @@ class PostForm(forms.ModelForm):
             'caption':forms.Textarea(attrs={'rows':3, 'placeholder':'Напишіть підпис...'}),
         }
 
+    def save(self, commit=True):
+        post = super().save(commit=False)
+        if commit:
+            post.save()
+        return post
+
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ['content']
         widgets = {
             'content': forms.Textarea(attrs={'rows': 2, 'placeholder': 'Залишити коментар...'}),
+        }
+
+class EditProfileForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['username', 'firstname', 'lastname', 'phone']
+        widgets = {
+            'username': forms.TextInput(attrs={'class': 'form-control', }),
+            'firstname': forms.TextInput(attrs={'class': 'form-control', }),
+            'lastname': forms.TextInput(attrs={'class': 'form-control', }),
+            'phone': forms.TextInput(attrs={'class': 'form-control', }),
         }

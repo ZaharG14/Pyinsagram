@@ -40,8 +40,9 @@
         {% if user_profile.joined_date %}
             <p>User since: {{ myuser.joined_date }}</p>
         {% endif %}
+        <a href="{% url 'edit_profile' %}" class="btn btn-outline-primary btn-sm">Редагувати профіль</a>
 
-        <p>Back to <a href=" {% url 'users' %}">Users</a></p>
+        <p>Back to <a href=" {% url 'home' %}"> Пости </a></p>
     </div>
 </body>
 </html>

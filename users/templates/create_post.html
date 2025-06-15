@@ -9,6 +9,10 @@
     <form method="post">
       {% csrf_token %}
       {{ form.as_p }}
+        <div class="mb-3">
+           <label for="tags" class="form-label">Теги</label>
+           <input type="text" name="tags" class="form-control" placeholder="напр. food, travel, cats">
+        </div>
       <button type="submit">Писати пост</button>
     </form>
 

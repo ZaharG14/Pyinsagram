@@ -3,8 +3,8 @@ from django.http import HttpResponse, JsonResponse
 from django.template import loader
 from django.template.defaulttags import comment
 
-from .forms import RegisterForm, LoginForm, PostForm, CommentForm
-from .models import User, Post, Like, Comment
+from .forms import RegisterForm, LoginForm, PostForm, CommentForm, EditProfileForm
+from .models import User, Post, Like, Tag, PostTag, Comment
 from django.contrib import  messages
 
 from django.shortcuts import render, redirect, get_object_or_404
@@ -33,7 +33,7 @@ def registration(request):
         if form.is_valid():
             form.save()
             messages.success(request, 'Account create')
-            return  redirect('users')
+            return  redirect('details')
         else:
             messages.error(request, 'Edit your on the form')
     else:
@@ -50,7 +50,7 @@ def login_view(request):
 
             if user:
                 login(request, user)
-                return redirect("home")
+                return redirect("details", id=user.id)
 
     else:
         form = LoginForm()
@@ -65,10 +65,16 @@ def create_post(request):
             post = form.save(commit=False)
             post.author = request.user
             post.save()
+
+            raw_tags = request.POST.get('tags', '')
+            tag_list = [t.strip().lower() for t in raw_tags.split(',') if t.strip()]
+            for tag_name in tag_list:
+                tag, created = Tag.objects.get_or_create(name=tag_name)
+                PostTag.objects.grt_or_creare(post=post, tag=tag)
+
             return redirect('home')
     else:
         form = PostForm()
-
     return render(request, 'create_post.html', {'form': form})
 
 def show_posts(request):
@@ -118,3 +124,14 @@ def like_post_ajax(request, post_pk):
         "likes_count": post.likes.count()
     })
 
+@login_required
+def edit_profile(request):
+    if request.method == "POST":
+        form = EditProfileForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect('details', id=request.user.id)
+    else:
+        form = EditProfileForm(instance=request.user)
+
+    return render(request, 'edit_profile.html', {'form': form})

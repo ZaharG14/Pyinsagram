@@ -13,5 +13,6 @@ urlpatterns = [
     path('',views.show_posts, name='home'),
     path('post/<int:post_pk>/', views.post_detail, name='post_detail'),
     path('post/<int:post_pk>/like/', views.like_post_ajax, name='like_post_ajax'),
-    path('logout/', auth_views.LogoutView.as_view(next_page="login"), name='logout')
+    path('logout/', auth_views.LogoutView.as_view(next_page="login"), name='logout'),
+    path('edit/', views.edit_profile, name='edit_profile'),
 ]

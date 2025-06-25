@@ -81,7 +81,7 @@
 {% for comment in comments %}
     <div style="margin-bottom: 10px;">
         <strong>{{ comment.user.username}}</strong>: {{ comment.content }}<br>
-        <small>{{ comment.created_at|date:"d M Y H:i" }}</small>
+        <small>{{ comment.created_at|date:"d.m.Y" }}</small>
     </div>
 {% empty %}
     <p>Ще немає коментарів</p>

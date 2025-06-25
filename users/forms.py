@@ -76,7 +76,7 @@ class CommentForm(forms.ModelForm):
 class EditProfileForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ['username', 'firstname', 'lastname', 'phone']
+        fields = ['username', 'firstname', 'lastname', 'phone', 'avatar']
         widgets = {
             'username': forms.TextInput(attrs={'class': 'form-control', }),
             'firstname': forms.TextInput(attrs={'class': 'form-control', }),

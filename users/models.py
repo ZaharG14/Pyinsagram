@@ -6,6 +6,9 @@ from django.db.models import Model
 from django.template.base import kwarg_re
 
 from django.urls import reverse
+from django.conf import settings
+from django.utils.translation import gettext_lazy as _
+
 
 
 class UserManager(BaseUserManager):
@@ -25,11 +28,16 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
+    def user_avatar_path(instance, filename):
+        return f'avatars/{instance.username}/{filename}'
+
+
 class User(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(max_length=150, unique=True)
     firstname = models.CharField(max_length=255)
     lastname = models.CharField(max_length=255)
     phone = models.CharField(max_length=20, null=False, unique=True)
+    avatar = models.ImageField(upload_to='avatars/', blank=True, null=True,)
     joined_date = models.DateField(auto_now_add=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)

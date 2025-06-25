@@ -20,10 +20,10 @@ def users(request):
     return HttpResponse(template.render(context, request))
 
 def details(request, id):
-    myuser = User.objects.get(id=id)
+    user_profile = User.objects.get(id=id)
     template = loader.get_template("details.html")
     context = {
-        'myuser': myuser,
+        'user_profile': user_profile,
     }
     return  HttpResponse(template.render(context, request))
 
@@ -126,11 +126,12 @@ def like_post_ajax(request, post_pk):
 
 @login_required
 def edit_profile(request):
+    user = request.user
     if request.method == "POST":
-        form = EditProfileForm(request.POST, instance=request.user)
+        form = EditProfileForm(request.POST, request.FILES,  instance=request.user)
         if form.is_valid():
             form.save()
-            return redirect('details', id=request.user.id)
+            return redirect('details', id=request.user.pk)
     else:
         form = EditProfileForm(instance=request.user)
 

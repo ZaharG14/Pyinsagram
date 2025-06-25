@@ -4,7 +4,12 @@
 {% block content %}
 <div class="container mt-4">
     <h2>Редагувати профіль</h2>
-    <form method="post">
+
+    {% if user.avatar %}
+      <img src="{{ user.avatar.url }}" alt="Аватар" class="img-thumbnail" width="150">
+    {% endif %}
+
+    <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit" class="btn btn-primary">Зберегти</button>

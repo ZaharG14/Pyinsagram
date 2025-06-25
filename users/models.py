@@ -77,7 +77,7 @@ class Post(models.Model):
         return self.likes.count()
 
     class Meta:
-        verbose_name = 'User\'s posts'
+        verbose_name = 'User\'s post'
         verbose_name_plural = 'User\'s posts'
         ordering = ['-created_at', 'author']
         db_table = "posts"

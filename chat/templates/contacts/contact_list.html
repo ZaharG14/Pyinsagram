@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title><h2>Мої контакти</h2></title>
+</head>
+<body>
+    <ul>
+    {% for contact in contacts %}
+        <li>{{ contact.name }} — {{ contact.phone_number }}</li>
+    {% empty %}
+        <li>Контакти не знайдено.</li>
+    {% endfor %}
+    </ul>
+    <a href="{% url 'add_contact' %}">➕ Додати контакт</a>
+</body>
+</html>

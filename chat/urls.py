@@ -1,8 +1,6 @@
 from django.urls import path
-from .views import add_contact, contact_list
-
+from . import views
 
 urlpatterns = [
-    path('contacts/add/', add_contact, name='add_contact'),
-    path('contacts/', contact_list, name='contact_list'),
+    path('<int:user_id>/', views.chat_view, name='chat'),
 ]

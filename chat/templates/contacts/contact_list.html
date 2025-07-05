@@ -2,12 +2,20 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title><h2>Мої контакти</h2></title>
+    <title>Мої контакти</title>
 </head>
 <body>
+    <h2>Мої контакти</h2>
     <ul>
     {% for contact in contacts %}
-        <li>{{ contact.name }} — {{ contact.phone_number }}</li>
+        <li>
+            {{ contact.name }} — {{ contact.phone_number }}
+            {% if contact.linked_user %}
+                <a href="{% url 'chat_view' contact.linked_user.username %}">✉️ Написати</a>
+            {% else %}
+                <span style="color:gray;">(не пов’язаний із користувачем)</span>
+            {% endif %}
+        </li>
     {% empty %}
         <li>Контакти не знайдено.</li>
     {% endfor %}

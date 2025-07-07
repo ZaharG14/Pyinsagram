@@ -1,6 +1,8 @@
+from pyexpat.errors import messages
+
 from django.dispatch import receiver
-from django.shortcuts import render, redirect
-from .models import Message
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import Chat, Message
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 
@@ -8,15 +10,27 @@ User = get_user_model()
 
 @login_required
 def chat_view(request, user_id):
-    other_user = User.objects.get(id=user_id)
-    messages = Message.objects.filter(
-        sender__in=[request.user, other_user],
-        receiver__in=[request.user, other_user]
-    )
-    if request.method == 'POST':
-       caption = request.POST.get("massage") or ""
-       if caption.strip():
-        Message.objects.create(sender=request.user, receiver=other_user, caption=caption)
-       return redirect("chat", user_id=other_user.id)
+    other_user = get_object_or_404(id=user_id)
 
-    return render(request, "message/chat.html", {"messages": messages, "other_user": other_user})
+    chat = Chat.objects.filter(participants=request.user).filter(participants=other_user).first()
+    if not chat:
+        chat = Chat.objects.create()
+        chat.participants.add(request.user, other_user)
+
+    if request.method == 'POST':
+        caption = request.POST.get("message")
+        if caption:
+            Message.objects.create(chat=chat, sender=request.user, receiver=other_user, caption=caption)
+
+        return redirect("chat", user_id=other_user.id)
+
+    messages = chat.messages.order_by('timestamp')
+    return render(request, "message/chat.html", {
+        "chat": chat,
+        "messages": messages,
+        "other_user": other_user
+    })
+
+@login_required
+def all_chats_view(request):
+    pass

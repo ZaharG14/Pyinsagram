@@ -50,7 +50,7 @@
         {% if user.is_authenticated and user.id == user_profile.id %}
             <a href="{% url 'edit_profile' %}" class="btn btn-outline-primary btn-sm me-2">Редагувати профіль</a>
             <a href="{% url 'create_post' %}" class="btn btn-primary btn-sm">➕ Створити пост</a>
-            <a class="nav-link" href="{% url 'all_chats' %}">Мої чати</a>
+            <a class="nav-link" href="{% url 'my_chats' %}">Мої чати</a>
         {% endif %}
 
         <p class="mt-3">

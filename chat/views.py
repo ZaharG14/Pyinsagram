@@ -1,6 +1,4 @@
-from pyexpat.errors import messages
-
-from django.dispatch import receiver
+from django.contrib.messages.context_processors import messages
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Chat, Message
 from django.contrib.auth.decorators import login_required
@@ -10,7 +8,7 @@ User = get_user_model()
 
 @login_required
 def chat_view(request, user_id):
-    other_user = get_object_or_404(id=user_id)
+    other_user = get_object_or_404(User, id=user_id)
 
     chat = Chat.objects.filter(participants=request.user).filter(participants=other_user).first()
     if not chat:
@@ -32,5 +30,24 @@ def chat_view(request, user_id):
     })
 
 @login_required
-def all_chats_view(request):
-    pass
+def all_chats_view(request, user_id):
+    other_user = get_object_or_404(User, id=user_id)
+
+    chat = Chat.objects.filter(participants=request.user).filter(participants=other_user).first()
+    if not chat:
+        chat = Chat.objects.create()
+        chat.participants.add(request.user, other_user)
+
+    if request.method == "POST":
+        caption = request.POST.get("message")
+        if caption:
+            Message.objects.create(chat=chat, sender=request.user, caption=caption)
+
+        return redirect('chat', user_id=other_user.id)
+
+    messages = chat.messages.order_by('timestamp')
+    return render(request, 'message/chat.html',{
+        'chat': chat,
+        'messages': messages,
+        'other_user': other_user
+    })

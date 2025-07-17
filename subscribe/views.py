@@ -26,3 +26,15 @@ def follow_toggle(request, username):
         messages.success(request, f"You are now subscribed to {username}.")
 
     return redirect(reverse('user:profile', kwargs={'username': username}))
+
+@login_required
+def follow_toggle_view(request, pk):
+    target = get_object_or_404(User, pk=pk)
+    profile = target.profile  # або інша логіка
+
+    if profile.followers.filter(pk=request.user.pk).exists():
+        profile.followers.remove(request.user)
+    else:
+        profile.followers.add(request.user)
+
+    return redirect('profile', pk=pk)

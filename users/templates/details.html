@@ -1,4 +1,5 @@
 {% load static %}
+{% load follow_tags %}
 <!DOCTYPE html>
 <html lang="uk">
 <head>
@@ -47,10 +48,12 @@
             <p><strong>З нами з:</strong> {{ user_profile.joined_date }}</p>
         {% endif %}
 
-        {% if user.is_authenticated and user.id == user_profile.id %}
+        {% if request.user.is_authenticated and request.user.id == user_profile.id %}
             <a href="{% url 'edit_profile' %}" class="btn btn-outline-primary btn-sm me-2">Редагувати профіль</a>
             <a href="{% url 'create_post' %}" class="btn btn-primary btn-sm">➕ Створити пост</a>
             <a class="nav-link" href="{% url 'all_chats' %}">Мої чати</a>
+        {% else %}
+            {% follow_button user_profile %}
         {% endif %}
 
         <p class="mt-3">

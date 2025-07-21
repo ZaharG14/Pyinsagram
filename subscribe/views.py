@@ -1,4 +1,4 @@
-from audioop import reverse
+from django.urls import reverse
 
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Subscription
@@ -10,13 +10,13 @@ User = get_user_model()
 
 @login_required
 def follow_toggle(request, username):
-    subscribed_person = get_object_or_404(User, username)
+    subscribed_person = get_object_or_404(User, username=username)
     if subscribed_person == request.user:
         messages.error(request, "You cannot subscribe to yourself")
         return redirect(reverse('user:profile', kwargs={'username': username}))
 
     sub, created = Subscription.objects.get_or_create(
-        subscrer=request.user,
+        subscriber=request.user,
         subscribed_person=subscribed_person
     )
     if not created:
@@ -25,16 +25,4 @@ def follow_toggle(request, username):
     else:
         messages.success(request, f"You are now subscribed to {username}.")
 
-    return redirect(reverse('user:profile', kwargs={'username': username}))
-
-@login_required
-def follow_toggle_view(request, pk):
-    target = get_object_or_404(User, pk=pk)
-    profile = target.profile  # або інша логіка
-
-    if profile.followers.filter(pk=request.user.pk).exists():
-        profile.followers.remove(request.user)
-    else:
-        profile.followers.add(request.user)
-
-    return redirect('profile', pk=pk)
+    return redirect(reverse('details', kwargs={'id': subscribed_person.id}))

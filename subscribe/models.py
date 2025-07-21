@@ -3,7 +3,7 @@ from django.conf import settings
 
 class Subscription(models.Model):
     subscriber = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="following_set")
-    subscribed_person = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="settler")
+    subscribed_person = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="followers_set")
     timestamp = models.DateTimeField(auto_now_add=True)
 
     class Meta:

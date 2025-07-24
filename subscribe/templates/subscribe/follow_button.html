@@ -1,9 +1,8 @@
-{% if is_following %}
-  <a href="{{ toggle_url }}" class="btn btn-outline-secondary ms-3">
-    Unsubscribe
-  </a>
-{% else %}
-  <a href="{{ toggle_url }}" class="btn btn-primary ms-3">
-    Subscribe
-  </a>
+{% if toggle_url %}
+    <form method="post" action="{{ toggle_url }}" class="follow-form">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-primary">
+            {% if is_following %}Unfollow{% else %}Follow{% endif %}
+        </button>
+    </form>
 {% endif %}

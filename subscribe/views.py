@@ -1,28 +1,21 @@
-from django.urls import reverse
-
-from django.shortcuts import render, get_object_or_404, redirect
-from .models import Subscription
 from django.contrib.auth.decorators import login_required
-from django.contrib import messages
+from django.shortcuts import get_object_or_404, redirect
 from django.contrib.auth import get_user_model
+from .models import Subscription
 
 User = get_user_model()
 
 @login_required
 def follow_toggle(request, username):
-    subscribed_person = get_object_or_404(User, username=username)
-    if subscribed_person == request.user:
-        messages.error(request, "You cannot subscribe to yourself")
-        return redirect(reverse('user:profile', kwargs={'username': username}))
+    target_user = get_object_or_404(User, username=username)
+    if target_user == request.user:
+        return redirect('profile', username=username)  # не можна підписатися на себе
 
-    sub, created = Subscription.objects.get_or_create(
+    subscription, created = Subscription.objects.get_or_create(
         subscriber=request.user,
-        subscribed_person=subscribed_person
+        subscribed_person=target_user
     )
     if not created:
-        sub.delete()
-        messages.success(request, f"You have unsubscribed from {username}.")
-    else:
-        messages.success(request, f"You are now subscribed to {username}.")
+        subscription.delete()
 
-    return redirect(reverse('details', kwargs={'id': subscribed_person.id}))
+    return redirect('profile', username=username)
